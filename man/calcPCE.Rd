@@ -4,12 +4,13 @@
 \alias{calcPCE}
 \title{Calculate Pooled Cohorts Equations risk scores}
 \usage{
-calcPCE(age, race, sex, tc, hdl, sbp, bptx, smoking, dm)
+calcPCE(age, race, sex, tc, hdl, sbp, bptx, smoking, dm, white = 0,
+  black = 1, female = 0, male = 1)
 }
 \arguments{
 \item{age}{age in years}
 
-\item{race}{0=white/1=black}
+\item{race}{white (non-black) vs. black}
 
 \item{sex}{0=female/1=male}
 
@@ -24,6 +25,14 @@ calcPCE(age, race, sex, tc, hdl, sbp, bptx, smoking, dm)
 \item{smoking}{active smoking 0=FALSE/1=TRUE}
 
 \item{dm}{diabetes mellitus 0=FALSE/1=TRUE}
+
+\item{white}{value which indicates white/non-black the parameter race (default=0)}
+
+\item{black}{value which indicates blacks in the parameter race (default=1)}
+
+\item{female}{value which indicates female in the parameter sex (default=0)}
+
+\item{male}{value which indicates male in the parameter sex (default=1)}
 }
 \value{
 PCE risk as numeric from 0 to 1
