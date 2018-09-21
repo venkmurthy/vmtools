@@ -4,8 +4,14 @@
 \alias{calcPCE}
 \title{Calculate Pooled Cohorts Equations risk scores}
 \usage{
-calcPCE(age, race, sex, tc, hdl, sbp, bptx, smoking, dm, white = 0,
-  black = 1, female = 0, male = 1)
+calcPCE(age, race, sex, tc, hdl, sbp, bptx, smoking, dm, white = c(0,
+  "w", "white"), black = c(1, "b", "black"), female = c(0, "f",
+  "female"), male = c(1, "m", "male"), bptx.true = c(1, "t", "true",
+  "y", "yes"), bptx.false = c(0, "f", "false", "n", "no"),
+  smoking.true = c(1, "t", "true", "y", "yes", "active"),
+  smoking.false = c(0, "f", "false", "former", "non-smoker",
+  "nonsmoker"), dm.true = c(1, "t", "true", "y", "yes"),
+  dm.false = c(0, "f", "false", "n", "no"))
 }
 \arguments{
 \item{age}{age in years}
@@ -26,13 +32,25 @@ calcPCE(age, race, sex, tc, hdl, sbp, bptx, smoking, dm, white = 0,
 
 \item{dm}{diabetes mellitus 0=FALSE/1=TRUE}
 
-\item{white}{value which indicates white/non-black the parameter race (default=0)}
+\item{white}{values which indicate white/non-black the parameter race, case-insensitive (default=0,"w","white")}
 
-\item{black}{value which indicates blacks in the parameter race (default=1)}
+\item{black}{values which indicate blacks in the parameter race, case-insensitive (default=1,"b","black")}
 
-\item{female}{value which indicates female in the parameter sex (default=0)}
+\item{female}{values which indicate female in the parameter sex, case-insensitive (default=0,"f","female")}
 
-\item{male}{value which indicates male in the parameter sex (default=1)}
+\item{male}{values which indicate male in the parameter sex, case-insensitive (default=1,"m","male")}
+
+\item{bptx.true}{values which indicate BP med use, case-insensitive (default=1,"t","true","y","yes")}
+
+\item{bptx.false}{values which indicate no BP med use, case-insensitive (default=0,"f","false","n","no")}
+
+\item{smoking.true}{values which indicate active smoking, case-insensitive (default=1,"t","true","y","yes","active")}
+
+\item{smoking.false}{values which indicate no active smoking, case-insensitive (default=0,"f","false","n","no","former","non-smoker","nonsmoker")}
+
+\item{dm.true}{values which indicate diabetes, case-insensitive (default=1,"t","true","y","yes")}
+
+\item{dm.false}{values which indicate nodiabetes, case-insensitive (default=0,"f","false","n","no")}
 }
 \value{
 PCE risk as numeric from 0 to 1
@@ -51,8 +69,8 @@ calcPCE(55,1,1,213,50,120,0,0,0)
 
 test.dat <- data.frame(age=rep(56:65,4),race=c(rep(0,10),rep(1,10),rep(0,10),rep(1,10)),
                        sex=c(rep(0,20),rep(1,20)),tc=rep(136:145,4),hdl=rep(46:55,4),sbp=rep(126:135,4),
-                       bptx=rep(c(rep(0,5),rep(1,5)),4),smoking=rep(c(rep(0,5),rep(1,5)),4),
-                       dm=rep(c(rep(0,5),rep(1,5)),4))
+                       bptx=rep(c(rep(0,5),rep(1,5)),4),smoking=rep(c(rep(0,5),rep("active",5)),4),
+                       dm=rep(c(rep("No",5),rep(1,5)),4))
 
 test.dat$PCE <- calcPCE(test.dat$age,test.dat$race,test.dat$sex,test.dat$tc,test.dat$hdl,test.dat$sbp,
                         test.dat$bptx,test.dat$smoking,test.dat$dm)
