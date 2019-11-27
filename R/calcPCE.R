@@ -106,5 +106,5 @@ calcPCE <- function(age, race, sex, tc, hdl, sbp, bptx, smoking, dm, white=c(0,"
   pce[wm] <- 1 - 0.9144 ^ pce[wm]
   pce[bm] <- 1 - 0.8954 ^ pce[bm]
 
-  pce
+  return(pce)
 }
