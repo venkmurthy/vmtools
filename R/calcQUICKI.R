@@ -1,7 +1,7 @@
 #' Calculate QUICKI
 #'
 #' This function calculates quantitative insulin sensitivity check index
-#' Reference: Katz A, et al. Journal of Clinical Endocrinology & Metabolism
+#' Reference: Katz A, et al. Journal of Clinical Endocrinology & Metabolism 2000;85:2402-10
 #' DOI: 10.1210/jcem.85.7.6661
 #' @param insulin in μU/mL
 #' @param glucose in mass units (mg/dL)
@@ -17,6 +17,6 @@
 #' test.dat$QUICKI <- calcQUICKI(insulin=test.dat$insulin,glucose=test.dat$glucose)
 #' @export
 
-calcQUICKI <- function(insulin,glucose,units="molar") {
+calcQUICKI <- function(insulin,glucose) {
   return(1/(log(insulin) + log(glucose)))
 }

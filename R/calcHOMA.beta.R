@@ -17,6 +17,6 @@
 #' test.dat$HOMA.beta <- calcHOMA.beta(insulin=test.dat$insulin,glucose=test.dat$glucose)
 #' @export
 
-calcHOMA.beta <- function(insulin,glucose,units="molar") {
+calcHOMA.beta <- function(insulin,glucose) {
   return((360*insulin)/(glucose-63))
 }

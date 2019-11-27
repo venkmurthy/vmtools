@@ -17,6 +17,6 @@
 #' test.dat$HOMA.IR <- calcHOMA.IR(insulin=test.dat$insulin,glucose=test.dat$glucose)
 #' @export
 
-calcHOMA.IR <- function(insulin,glucose,units="molar") {
+calcHOMA.IR <- function(insulin,glucose) {
   return(glucose*insulin/405)
 }
