@@ -21,3 +21,4 @@ format.pval <- function(p,include.p=TRUE,na.string="NA") {
                          ifelse(p<0.01,sprintf("%0.3f",p),sprintf("%0.2f",p)))))
   }
 }
+
