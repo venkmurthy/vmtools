@@ -96,9 +96,10 @@ HMDB_ID_from_ID <- function(id) {
     return(NA)
   }
 
+  Sys.sleep(0.05)
+
   url <- httr::HEAD(sprintf(search.url,1,id))$all_headers[[1]]$headers$location
   url.parts <- unlist(strsplit(url, "/"))
 
   return(url.parts[length(url.parts)])
 }
-
