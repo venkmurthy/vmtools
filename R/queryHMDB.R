@@ -88,7 +88,9 @@ HMDB_ID_from_ID <- function(id) {
   search.url <- "https://hmdb.ca/unearth/q?button=&page=%i&query=%s&searcher=metabolites"
 
   # If id is numeric, convert to string, if string make sure it starts with HMDB
-  if (is.numeric(id)) {
+  if (is.na(id)) {
+    return(NA)
+  } else if (is.numeric(id)) {
     id <- sprintf("HMDB%07i",id)
   } else if (is.character(id) & substr(id,1,4)=="HMDB") {
 
@@ -103,4 +105,3 @@ HMDB_ID_from_ID <- function(id) {
 
   return(url.parts[length(url.parts)])
 }
-
