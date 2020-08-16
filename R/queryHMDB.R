@@ -81,7 +81,7 @@ HMDB_ID_from_name <- function(met.name) {
 #' @keywords HMDB
 #' @examples
 #' HMDB_ID_from_ID(22)
-#' HMDB_ID_from_name("HMDB0006022")
+#' HMDB_ID_from_ID("HMDB0006022")
 #' @export
 HMDB_ID_from_ID <- function(id) {
   if (is.numeric(id)) {
