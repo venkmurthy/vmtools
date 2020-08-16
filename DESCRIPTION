@@ -9,4 +9,8 @@ License: GPL v3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.1
+<<<<<<< HEAD
 Imports: rvest, xml2, dplyr, httr
+=======
+Imports: rvest xml2 dplyr httr
+>>>>>>> 3585dc9eb4eb404814c36a122ee30537fcac8763
