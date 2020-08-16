@@ -81,9 +81,13 @@ HMDB_ID_from_name <- function(met.name) {
 #' @keywords HMDB
 #' @examples
 #' HMDB_ID_from_ID(22)
-#' HMDB_ID_from_name("HMDB0006022")
+#' HMDB_ID_from_ID("HMDB0006022")
 #' @export
 HMDB_ID_from_ID <- function(id) {
+  # Set up some search constants
+  search.url <- "https://hmdb.ca/unearth/q?button=&page=%i&query=%s&searcher=metabolites"
+
+  # If id is numeric, convert to string, if string make sure it starts with HMDB
   if (is.numeric(id)) {
     id <- sprintf("HMDB%07i",id)
   } else if (is.character(id) & substr(id,1,4)=="HMDB") {
