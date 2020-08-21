@@ -16,6 +16,7 @@ library(dplyr)
 library(rvest)
 library(xml2)
 
+
 HMDB_ID_from_name <- function(met.name) {
   # Convert input met name to lower case
   q <- tolower(met.name)
@@ -30,7 +31,7 @@ HMDB_ID_from_name <- function(met.name) {
 
   # Loop, downloading search results and extracting HMDB IDs
   repeat {
-    p <- read_html(sprintf(search.url,i,gsub(" ","+",q))) %>% html_nodes("div.result-link") %>% html_nodes("a") %>% html_text()
+    p <- read_html(sprintf(search.url,i,URLencode(q,reserved=TRUE))) %>% html_nodes("div.result-link") %>% html_nodes("a") %>% html_text()
 
     hmdb.ids <- c(hmdb.ids, p)
 
