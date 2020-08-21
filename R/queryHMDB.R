@@ -16,7 +16,6 @@ library(dplyr)
 library(rvest)
 library(xml2)
 
-
 HMDB_ID_from_name <- function(met.name) {
   # Convert input met name to lower case
   q <- tolower(met.name)
