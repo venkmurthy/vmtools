@@ -15,6 +15,7 @@
 library(dplyr)
 library(rvest)
 library(xml2)
+library(purrr)
 
 HMDB_ID_from_one_name <- function(met.name) {
 
@@ -26,6 +27,9 @@ HMDB_ID_from_one_name <- function(met.name) {
   # Set up some search constants
   search.url <- "https://hmdb.ca/unearth/q?button=&page=%i&query=%s&searcher=metabolites"
   xml.url <- "https://hmdb.ca/metabolites/%s.xml"
+
+  # Safe version of read_xml
+  safe_read_xml <- purrr::safely(read_xml)
 
   # Initialize variables
   i <- 1
@@ -42,7 +46,24 @@ HMDB_ID_from_one_name <- function(met.name) {
   }
 
   # Download all XMLs
-  hmdb.xmls <- lapply(hmdb.ids, FUN=function(x) { Sys.sleep(0.05); read_xml(sprintf(xml.url,x)) } )
+  hmdb.xmls <- vector(mode="list",length=length(hmdb.ids))
+  for (i in 1:length(hmdb.ids)) {
+
+    # Set up a pause before reloading
+    pause.length <- 0.05
+
+    repeat {
+      x <- safe_read_xml(sprintf(xml.url,hmdb.ids[i]))
+
+      if (is.null(x$error)) {
+        hmdb.xmls[[i]] <- x$result
+        break
+      } else {
+        Sys.sleep(pause.length)
+        pause.length <- pause.length * 2
+      }
+    }
+  }
 
   # Pull out all names and synonyms
   hmdb.names <- lapply(hmdb.xmls, FUN=function(x) { x %>% xml_find_first("//metabolite/name") %>% xml_text( )})
