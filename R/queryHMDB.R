@@ -117,11 +117,8 @@ HMDB_ID_from_ID <- function(ids) {
       # Set up a pause before reloading
       pause.length <- 0.05
 
-      # If the pulled headers are not good, and we haven't waited too long already
+      # Repeatedly load, with longer and longer pauses if we fail
       repeat {
-        # Pause
-        Sys.sleep(pause.length)
-
         # Retry pulling headers
         h <- httr::HEAD(sprintf(search.url,1,out.ids[i]))$all_headers
 
@@ -135,12 +132,14 @@ HMDB_ID_from_ID <- function(ids) {
           }
         }
 
+        # Pause
+        Sys.sleep(pause.length)
+
         # Increase next pause
         pause.length <- pause.length * 2
       }
-
-      }
     }
+  }
 
   # Split out the HMDB ID part of the URL
   out.ids <- sapply(strsplit(out.ids,"\\/"),FUN=function(x) x[length(x)])
