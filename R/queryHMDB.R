@@ -76,32 +76,77 @@ HMDB_ID_from_name <- function(met.name) {
 #'
 #' This function searches the HMDB to find the canonical HMDB ID for a given ID.
 #'
-#' @param id string with ID starting with "HMDB" or number with just the numeric part
-#' @return string with canonical HMDB ID
+#' @param id vector of strings with ID starting with "HMDB" or numbers with just the numeric part
+#' @return vector of strings with canonical HMDB IDs
 #' @keywords HMDB
 #' @examples
 #' HMDB_ID_from_ID(22)
 #' HMDB_ID_from_ID("HMDB0006022")
 #' @export
-HMDB_ID_from_ID <- function(id) {
+HMDB_ID_from_ID <- function(ids) {
   # Set up some search constants
   search.url <- "https://hmdb.ca/unearth/q?button=&page=%i&query=%s&searcher=metabolites"
 
-  # If id is numeric, convert to string, if string make sure it starts with HMDB
-  if (is.na(id)) {
-    return(NA)
-  } else if (is.numeric(id)) {
-    id <- sprintf("HMDB%07i",id)
-  } else if (is.character(id) & substr(id,1,4)=="HMDB") {
+  # Simplify list
+  ids <-unlist(ids)
 
-  } else {
-    return(NA)
-  }
+  # Initialize output list
+  # out.ids <- vector(mode="character",length=length(ids))
+  out.ids <- rep("",length(ids))
+  names(out.ids) <- ids
 
-  Sys.sleep(0.4)
+  # Loop over all elements
+  for (i in seq_along(ids)) {
+    # Pull out one ID
+    x <- ids[i]
 
-  url <- httr::HEAD(sprintf(search.url,1,id))$all_headers[[1]]$headers$location
-  url.parts <- unlist(strsplit(url, "/"))
+    # It is a character string that starts with "HMDB" then fine, likewise if it is a number. Otherwise NA
+    if(is.character(x) & substr(x,1,4)=="HMDB") { out.ids[i] <- x
+    } else if (is.numeric(x)) { out.ids[i] <- sprintf("HMDB%07i",x)
+    } else out.ids[i] <- NA
 
-  return(url.parts[length(url.parts)])
+    # If the ID is good above,
+    if (!is.na(out.ids[i])) {
+
+      # Initialize good.q
+      good.q <- FALSE
+
+      # Set up a pause before reloading
+      pause.length <- 0.05
+
+      # If the pulled headers are not good, and we haven't waited too long already
+      while (!good.q & pause.length <10) {
+        # Pause
+        Sys.sleep(pause.length)
+
+        # Increase next pause
+        pause.length <- pause.length * 2
+
+        # Retry pulling headers
+        h <- httr::HEAD(sprintf(search.url,1,out.ids[i]))$all_headers
+
+        # Did we get two sets of headers?
+        good.q <- (length(h) >= 2)
+
+        # If we got two sets of headers
+        if (good.q) {
+          # check that there are actually headers
+          good.q <- ("headers" %in% names(h[[2]]))
+
+          # If there are headers, is there a location header?
+          if (good.q) (good.q <- ("location" %in% names(h[[2]][["headers"]])))
+        }
+      }
+
+      # pull out the location header
+      out.ids[[i]] <- h[[2]][["headers"]][["location"]]
+      }
+    }
+
+  # Split out the HMDB ID part of the URL
+  out.ids <- sapply(strsplit(out.ids,"\\/"),FUN=function(x) x[length(x)])
+
+  return(out.ids)
 }
+
+
