@@ -56,6 +56,7 @@ HMDB_ID_from_ID <- function(ids) {
 
         # If we found a record
         if (!is.na(h.final) & is.finite(h.final)) {
+
           # pull out the location header
           out.ids[[i]] <- h[[h.final]][["headers"]][["location"]]
 
