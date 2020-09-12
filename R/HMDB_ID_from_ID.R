@@ -32,7 +32,8 @@ HMDB_ID_from_ID <- function(ids) {
     x <- ids[i]
 
     # It is a character string that starts with "HMDB" then fine, likewise if it is a number. Otherwise NA
-    if(is.character(x) & substr(x,1,4)=="HMDB") { out.ids[i] <- x
+    if (is.na(x)) { out.ids[i] <- NA
+    } else if(is.character(x) & substr(x,1,4)=="HMDB") { out.ids[i] <- x
     } else if (is.numeric(x)) { out.ids[i] <- sprintf("HMDB%07i",x)
     } else out.ids[i] <- NA
 
