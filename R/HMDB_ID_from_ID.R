@@ -50,14 +50,15 @@ HMDB_ID_from_ID <- function(ids) {
         # Retry pulling headers
         h <- httr::HEAD(sprintf(search.url,1,out.ids[i]))$all_headers
 
-        # If we got two sets of headers, there are actually headers and a location within that
-        if (length(h) >= 2) {
-          if (("headers" %in% names(h[[2]])) & ("location" %in% names(h[[2]][["headers"]]))) {
-            # pull out the location header
-            out.ids[[i]] <- h[[2]][["headers"]][["location"]]
+        # Find which is last element of chain which is status 302 (Found)
+        h.final <- max(which(sapply(h,FUN=function(x) x$status)==302))
 
-            break
-          }
+        # If we found a record
+        if (!is.na(h.final)) {
+          # pull out the location header
+          out.ids[[i]] <- h[[h.final]][["headers"]][["location"]]
+
+          break
         }
 
         # Pause
