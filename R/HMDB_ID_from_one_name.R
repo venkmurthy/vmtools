@@ -40,7 +40,7 @@ HMDB_ID_from_one_name <- function(met.name) {
 
     hmdb.ids <- c(hmdb.ids, p)
 
-    if (length(p)==0 | i >= 100) break
+    if (length(p)==0 | i >= 25) break
     else i <- i + 1
   }
 
