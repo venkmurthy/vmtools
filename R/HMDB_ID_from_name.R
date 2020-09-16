@@ -76,7 +76,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
       hmdb.ids <- h %>% html_nodes("div.result-link") %>% html_nodes("a") %>% html_text()
 
       for (j in seq_along(hmdb.ids)) {
-        pause.length <- 0.01
+        pause.length <- 0.05
 
         repeat {
           xml.entry <- safe_read_xml(sprintf(xml.url,hmdb.ids[j]))
