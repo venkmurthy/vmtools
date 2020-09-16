@@ -36,8 +36,16 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
   met.names <- unlist(met.names)
 
   # Safe version of read_xml
-  safe_read_xml <- purrr::safely(read_xml)
-  safe_read_html <- purrr::safely(read_html)
+  safe_read_xml <- function(u) {
+    con <- file(u)
+    on.exit(purrr::safely(close)(con))
+    purrr::safely(read_xml)(con)
+  }
+  safe_read_html <- function(u) {
+    con <- file(u)
+    on.exit(purrr::safely(close)(con))
+    purrr::safely(read_html)(con)
+  }
 
   # Initialize output list
   out.ids <- rep("",length(met.names))
@@ -59,7 +67,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
     ids.checked <- 0
 
     while (!found.id & ids.checked<=max.depth) {
-      u <- url(sprintf(search.url,search.page,URLencode(tolower(x),reserved=TRUE)))
+      u <- sprintf(search.url,search.page,URLencode(tolower(x),reserved=TRUE))
 
       pause.length <- 0.05
       repeat {
