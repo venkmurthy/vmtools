@@ -93,8 +93,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
         xml.names <- xml.entry %>% xml_find_first("//metabolite/name") %>% xml_text()
         xml.syns <- xml.entry %>% xml_find_all("//metabolite/synonyms/synonym") %>% xml_text()
 
-        if ((tolower(x) %in% tolower(c(xml.names,xml.syns))) |
-            (tolower(gsub(" ","-",x)) %in% tolower(c(xml.names,xml.syns)))) {
+        if (tolower(gsub(" ","",gsub("-","",x))) %in% tolower(c(xml.names,xml.syns))) {
           out.ids[i] <- hmdb.ids[j]
           found.id <- TRUE
           break
