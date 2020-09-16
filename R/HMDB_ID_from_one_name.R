@@ -10,11 +10,22 @@
 #' @examples
 #' HMDB_ID_from_one_name("valine")
 #' HMDB_ID_from_one_name("ectoine")
+#'
+#' test.list <- c("valine-d8","phenylalanine-d8","glycine","alanine","serine","threonine","methionine","glutamate",
+#' "asparagine","glutamine","histidine","arginine","lysine","valine","leucine","isoleucine","phenylalanine",
+#' "tyrosine","tryptophan","proline","hydroxyproline","ornithine","citrulline","taurine","GABA",
+#' "dimethylglycine","ADMA","SDMA","NMMA","2-aminoisobutyric acid","kynurenic acid","1-methylhistamine",
+#' "N-carbamoyl-beta-alanine","thiamine","niacinamide","betaine")
+#'
+#' t0 <- Sys.time()
+#' HMDB_ID_from_one_name(test.list[5])
+#' Sys.time() -t0
 #' @export
 library(dplyr)
 library(rvest)
 library(xml2)
 library(purrr)
+
 
 HMDB_ID_from_one_name <- function(met.name) {
 
@@ -36,11 +47,12 @@ HMDB_ID_from_one_name <- function(met.name) {
 
   # Loop, downloading search results and extracting HMDB IDs
   repeat {
-    p <- read_html(sprintf(search.url,i,URLencode(q,reserved=TRUE))) %>% html_nodes("div.result-link") %>% html_nodes("a") %>% html_text()
+    u <- url(sprintf(search.url,i,URLencode(q,reserved=TRUE)))
+    p <- read_html(u) %>% html_nodes("div.result-link") %>% html_nodes("a") %>% html_text()
 
     hmdb.ids <- c(hmdb.ids, p)
 
-    if (length(p)==0 | i >= 25) break
+    if (length(p)==0 | i >= 50) break
     else i <- i + 1
   }
 
@@ -49,7 +61,7 @@ HMDB_ID_from_one_name <- function(met.name) {
   for (i in 1:length(hmdb.ids)) {
 
     # Set up a pause before reloading
-    pause.length <- 0.05
+    pause.length <- 0.01
 
     repeat {
       x <- safe_read_xml(sprintf(xml.url,hmdb.ids[i]))
