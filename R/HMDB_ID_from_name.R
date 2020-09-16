@@ -49,7 +49,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
     x <- met.names[i]
 
     # if the element is NA then out.id is NA and move to the next
-    if (is.na(x)) {
+    if (is.na(x) | nchar(x)==0) {
       out.ids[i] <- NA
       next
     }
