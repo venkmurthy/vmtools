@@ -22,7 +22,6 @@ HMDB_ID_from_ID <- function(ids) {
   ids <-unlist(ids)
 
   # Initialize output list
-  # out.ids <- vector(mode="character",length=length(ids))
   out.ids <- rep("",length(ids))
   names(out.ids) <- ids
 
@@ -44,7 +43,7 @@ HMDB_ID_from_ID <- function(ids) {
       good.q <- FALSE
 
       # Set up a pause before reloading
-      pause.length <- 0.05
+      pause.length <- 0.01
 
       # Repeatedly load, with longer and longer pauses if we fail
       repeat {
