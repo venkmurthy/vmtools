@@ -69,7 +69,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
     while (!found.id & ids.checked<=max.depth) {
       u <- sprintf(search.url,search.page,URLencode(tolower(x),reserved=TRUE))
 
-      pause.length <- 0.2
+      pause.length <- 5
       repeat {
         h <- safe_read_html(u)
 
@@ -84,7 +84,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
       hmdb.ids <- h %>% html_nodes("div.result-link") %>% html_nodes("a") %>% html_text()
 
       for (j in seq_along(hmdb.ids)) {
-        pause.length <- 0.2
+        pause.length <- 5
 
         repeat {
           xml.entry <- safe_read_xml(sprintf(xml.url,hmdb.ids[j]))
