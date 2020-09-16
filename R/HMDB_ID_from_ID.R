@@ -69,7 +69,7 @@ HMDB_ID_from_ID <- function(ids) {
       Sys.sleep(pause.length)
 
       # Increase next pause
-      pause.length <- pause.length * 1.5
+      pause.length <- pause.length * 2
     }
   }
 

@@ -78,7 +78,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
           break
         } else {
           Sys.sleep(pause.length)
-          pause.length <- pause.length * 1.5
+          pause.length <- pause.length * 2
         }
       }
       hmdb.ids <- h %>% html_nodes("div.result-link") %>% html_nodes("a") %>% html_text()
@@ -94,7 +94,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
             break
           } else {
             Sys.sleep(pause.length)
-            pause.length <- pause.length * 1.5
+            pause.length <- pause.length * 2
           }
         }
 
