@@ -61,7 +61,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
     while (!found.id & ids.checked<=max.depth) {
       u <- url(sprintf(search.url,search.page,URLencode(tolower(x),reserved=TRUE)))
 
-      pause.length <- 0.01
+      pause.length <- 0.05
       repeat {
         h <- safe_read_html(u)
 

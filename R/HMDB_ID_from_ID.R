@@ -43,7 +43,7 @@ HMDB_ID_from_ID <- function(ids) {
       good.q <- FALSE
 
       # Set up a pause before reloading
-      pause.length <- 0.01
+      pause.length <- 0.05
 
       # Repeatedly load, with longer and longer pauses if we fail
       repeat {
