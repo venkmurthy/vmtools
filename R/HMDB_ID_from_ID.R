@@ -45,7 +45,7 @@ HMDB_ID_from_ID <- function(ids) {
     good.q <- FALSE
 
     # Set up a pause before reloading
-    pause.length <- 0.05
+    pause.length <- 0.2
 
     # Repeatedly load, with longer and longer pauses if we fail
     repeat {
@@ -69,7 +69,7 @@ HMDB_ID_from_ID <- function(ids) {
       Sys.sleep(pause.length)
 
       # Increase next pause
-      pause.length <- pause.length * 2
+      pause.length <- pause.length * 1.5
     }
   }
 
