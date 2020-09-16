@@ -31,44 +31,45 @@ HMDB_ID_from_ID <- function(ids) {
     x <- ids[i]
 
     # It is a character string that starts with "HMDB" then fine, likewise if it is a number. Otherwise NA
-    if (is.na(x)) { out.ids[i] <- NA
-    } else if(is.character(x) & substr(x,1,4)=="HMDB") { out.ids[i] <- x
+    if (is.na(x)) {
+      out.ids[i] <- NA
+      next
+    } else if (is.character(x) & substr(x,1,4)=="HMDB") { out.ids[i] <- x
     } else if (is.numeric(x)) { out.ids[i] <- sprintf("HMDB%07i",x)
-    } else out.ids[i] <- NA
+    } else {
+      out.ids[i] <- NA
+      next
+    }
 
-    # If the ID is good above,
-    if (!is.na(out.ids[i])) {
+    # Initialize good.q
+    good.q <- FALSE
 
-      # Initialize good.q
-      good.q <- FALSE
+    # Set up a pause before reloading
+    pause.length <- 0.05
 
-      # Set up a pause before reloading
-      pause.length <- 0.05
+    # Repeatedly load, with longer and longer pauses if we fail
+    repeat {
+      # Retry pulling headers
+      h <- httr::HEAD(sprintf(search.url,1,out.ids[i]))$all_headers
 
-      # Repeatedly load, with longer and longer pauses if we fail
-      repeat {
-        # Retry pulling headers
-        h <- httr::HEAD(sprintf(search.url,1,out.ids[i]))$all_headers
+      # Find which is last element of chain which is status 302 (Found)
+      list.302 <- which(sapply(h,FUN=function(x) x$status)==302)
+      h.final <- ifelse(length(list.302)>0,max(list.302),NA)
 
-        # Find which is last element of chain which is status 302 (Found)
-        list.302 <- which(sapply(h,FUN=function(x) x$status)==302)
-        h.final <- ifelse(length(list.302)>0,max(list.302),NA)
+      # If we found a record
+      if (!is.na(h.final) & is.finite(h.final)) {
 
-        # If we found a record
-        if (!is.na(h.final) & is.finite(h.final)) {
+        # pull out the location header
+        out.ids[[i]] <- h[[h.final]][["headers"]][["location"]]
 
-          # pull out the location header
-          out.ids[[i]] <- h[[h.final]][["headers"]][["location"]]
-
-          break
-        }
-
-        # Pause
-        Sys.sleep(pause.length)
-
-        # Increase next pause
-        pause.length <- pause.length * 2
+        break
       }
+
+      # Pause
+      Sys.sleep(pause.length)
+
+      # Increase next pause
+      pause.length <- pause.length * 2
     }
   }
 
