@@ -39,12 +39,12 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
   safe_read_xml <- function(u) {
     con <- file(u)
     on.exit(purrr::safely(close)(con))
-    purrr::safely(read_xml)(con)
+    purrr::quietly(purrr::safely(read_xml,quiet=TRUE))(con)
   }
   safe_read_html <- function(u) {
     con <- file(u)
     on.exit(purrr::safely(close)(con))
-    purrr::safely(read_html)(con)
+    purrr::quietly(purrr::safely(read_html,quiet=TRUE))(con)
   }
 
   # Initialize output list
