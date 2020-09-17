@@ -9,7 +9,7 @@
 #' HMDB_ID_from_ID(22)
 #' HMDB_ID_from_ID("HMDB0006022")
 #'
-#'id.list <- c("Internal Standard" "Internal Standard" "HMDB00123","HMDB00161","HMDB00187","HMDB00167",
+#'id.list <- c("Internal Standard","Internal Standard","HMDB00123","HMDB00161","HMDB00187","HMDB00167",
 #'             "HMDB00696","HMDB00148","HMDB00168","HMDB00641","HMDB00177","HMDB00517",
 #'             "HMDB00182","HMDB00883","HMDB00687","HMDB00172","HMDB00159","HMDB00158",
 #'             "HMDB00929","HMDB00162","HMDB00725","HMDB00214","HMDB00904","HMDB00251",
@@ -31,7 +31,6 @@
 #' HMDB_ID_from_ID(id.list)
 #' Sys.time() -t0
 #' @export
-
 
 HMDB_ID_from_ID <- function(ids) {
   # Set up some search constants
@@ -83,9 +82,14 @@ HMDB_ID_from_ID <- function(ids) {
       if (!is.na(h.final) & is.finite(h.final)) {
 
         # pull out the location header
-        out.ids[[i]] <- h[[h.final]][["headers"]][["location"]]
+        l <- strsplit(h[[h.final]][["headers"]][["location"]],"\\/")
+        l <- l[[1]][length(l[[1]])]
 
-        break
+        # If it is appropriate new ID, then break, otherwise try again
+        if (nchar(l)>=11 & substr(l,1,4)=="HMDB") {
+          out.ids[i] <- l
+          break
+        }
       }
 
       # Pause
@@ -95,9 +99,6 @@ HMDB_ID_from_ID <- function(ids) {
       pause.length <- pause.length * 1.5
     }
   }
-
-  # Split out the HMDB ID part of the URL
-  out.ids <- sapply(strsplit(out.ids,"\\/"),FUN=function(x) x[length(x)])
 
   return(out.ids)
 }
