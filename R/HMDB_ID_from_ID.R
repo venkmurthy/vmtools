@@ -83,9 +83,11 @@ HMDB_ID_from_ID <- function(ids) {
       if (!is.na(h.final) & is.finite(h.final)) {
 
         # pull out the location header
-        out.ids[[i]] <- h[[h.final]][["headers"]][["location"]]
+        l <- strsplit(h[[h.final]][["headers"]][["location"]],"\\/")
+        l <- l[length(l)]
 
-        break
+        # If it is appropriate new ID, then break, otherwise try again
+        if (nchar(l)>=11 & l[1:4]=="HMDB") break
       }
 
       # Pause
@@ -95,9 +97,6 @@ HMDB_ID_from_ID <- function(ids) {
       pause.length <- pause.length * 1.5
     }
   }
-
-  # Split out the HMDB ID part of the URL
-  out.ids <- sapply(strsplit(out.ids,"\\/"),FUN=function(x) x[length(x)])
 
   return(out.ids)
 }
