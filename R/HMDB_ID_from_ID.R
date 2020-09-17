@@ -12,7 +12,10 @@
 #'id.list <- c("Internal Standard","Internal Standard","HMDB00123","HMDB00161","HMDB00187","HMDB00167",
 #'             "HMDB01563","HMDB04030","HMDB00991","HMDB32390","HMDB05862",NA,"HMDB00479","HMDB03681",
 #'             "HMDB01867","HMDB03464","HMDB13678","HMDB04400","HMDB41876",NA,NA,"HMDB00138","HMDB00631",
-#'             "HMDB00128")
+#'             "HMDB00128","HMDB00696","HMDB00148","HMDB00168","HMDB00641","HMDB00177","HMDB00517",
+#'             "HMDB00182","HMDB00883","HMDB00687","HMDB00172","HMDB00159","HMDB00158","HMDB00929",
+#'             "HMDB00162","HMDB00725","HMDB00214","HMDB00904","HMDB00251","HMDB00112","HMDB00092",
+#'             "HMDB01539","HMDB03334","HMDB29416","HMDB01906")
 #'
 #' t0 <- Sys.time()
 #' HMDB_ID_from_ID(id.list)
@@ -51,6 +54,7 @@ HMDB_ID_from_ID <- function(ids) {
     good.q <- FALSE
 
     # Set up a pause before reloading
+    Sys.sleep(0.5)
     pause.length <- 5
 
     # Repeatedly load, with longer and longer pauses if we fail
