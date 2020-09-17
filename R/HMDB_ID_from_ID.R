@@ -8,11 +8,17 @@
 #' @examples
 #' HMDB_ID_from_ID(22)
 #' HMDB_ID_from_ID("HMDB0006022")
+#'
+#'id.list <- c("Internal Standard","Internal Standard","HMDB00123","HMDB00161","HMDB00187","HMDB00167",
+#'             "HMDB01563","HMDB04030","HMDB00991","HMDB32390","HMDB05862",NA,"HMDB00479","HMDB03681",
+#'             "HMDB01867","HMDB03464","HMDB13678","HMDB04400","HMDB41876",NA,NA,"HMDB00138","HMDB00631",
+#'             "HMDB00128")
+#'
+#' t0 <- Sys.time()
+#' HMDB_ID_from_ID(id.list)
+#' Sys.time() -t0
 #' @export
-library(dplyr)
-library(rvest)
-library(xml2)
-library(purrr)
+
 
 HMDB_ID_from_ID <- function(ids) {
   # Set up some search constants
