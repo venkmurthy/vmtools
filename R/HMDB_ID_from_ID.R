@@ -8,6 +8,7 @@
 #' @examples
 #' HMDB_ID_from_ID(22)
 #' HMDB_ID_from_ID("HMDB0006022")
+#' HMDB_ID_from_ID("HMDB1162")
 #'
 #'id.list <- c("Internal Standard","Internal Standard","HMDB00123","HMDB00161","HMDB00187","HMDB00167",
 #'             "HMDB00696","HMDB00148","HMDB00168","HMDB00641","HMDB00177","HMDB00517",
@@ -32,7 +33,7 @@
 #' Sys.time() -t0
 #' @export
 
-HMDB_ID_from_ID <- function(ids) {
+HMDB_ID_from_ID <- function(ids,max.tries=5) {
   # Set up some search constants
   search.url <- "https://hmdb.ca/unearth/q?button=&page=%i&query=%s&searcher=metabolites"
 
@@ -69,6 +70,9 @@ HMDB_ID_from_ID <- function(ids) {
     Sys.sleep(0.5)
     pause.length <- 5
 
+    # Attempt counter
+    num.tries <- 0
+
     # Repeatedly load, with longer and longer pauses if we fail
     repeat {
       # Retry pulling headers
@@ -78,8 +82,11 @@ HMDB_ID_from_ID <- function(ids) {
       list.302 <- which(sapply(h,FUN=function(x) x$status)==302)
       h.final <- ifelse(length(list.302)>0,max(list.302),NA)
 
+      # Find final status
+      final.status <- h[[length(h)]]$status
+
       # If we found a record
-      if (!is.na(h.final) & is.finite(h.final)) {
+      if (!is.na(h.final) & is.finite(h.final) & final.status==200) {
 
         # pull out the location header
         l <- strsplit(h[[h.final]][["headers"]][["location"]],"\\/")
@@ -88,6 +95,15 @@ HMDB_ID_from_ID <- function(ids) {
         # If it is appropriate new ID, then break, otherwise try again
         if (nchar(l)>=11 & substr(l,1,4)=="HMDB") {
           out.ids[i] <- l
+          break
+        }
+      } else if (final.status==404) {
+        out.ids[i] <- NA
+        break
+      } else {
+        num.tries <- num.tries + 1
+        if (num.tries > max.tries) {
+          out.ids[i] <- NA
           break
         }
       }
