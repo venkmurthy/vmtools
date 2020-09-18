@@ -5,6 +5,8 @@
 #' and if none, the first match among the synonyms.
 #'
 #' @param met.name string containing metabolite name
+#' @param max.depth number indicating how many entries to be checked (may be slightly more than this,
+#' depending on entries per page)
 #' @return string with canonical HMDB ID
 #' @keywords HMDB
 #' @examples
@@ -67,10 +69,11 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
     search.page <- 1
     ids.checked <- 0
 
-    # Repeated lookup
+    # Keep looking up entries while not found and max depth of parsing not exceeded
     while (!found.id & ids.checked<=max.depth) {
       u <- sprintf(search.url,search.page,URLencode(tolower(x),reserved=TRUE))
 
+      # Repeatedly try to read a specific page until success
       pause.length <- 5
       repeat {
         h <- safe_read_html(u)
@@ -83,11 +86,15 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
           pause.length <- pause.length * 1.5
         }
       }
+
+      # Extract HMDB IDs
       hmdb.ids <- h %>% rvest::html_nodes("div.result-link") %>% rvest::html_nodes("a") %>% rvest::html_text()
 
+      # For each HMDB ID
       for (j in seq_along(hmdb.ids)) {
         pause.length <- 5
 
+        # Repeatedly try to pull XML entry until success
         repeat {
           xml.entry <- safe_read_xml(sprintf(xml.url,hmdb.ids[j]))
 
@@ -100,18 +107,23 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
           }
         }
 
+        # Pull out primary name and synonyms
         xml.names <- xml.entry %>% xml2::xml_find_first("//metabolite/name") %>% xml2::xml_text()
         xml.syns <- xml.entry %>% xml2::xml_find_all("//metabolite/synonyms/synonym") %>% xml2::xml_text()
 
+        # Combine name and synonyms, create variations with hyphen vs. dash and make all lower case
         names.and.syns <- c(xml.names,xml.syns)
         names.and.syns <- tolower(unique(c(names.and.syns,gsub(" ","-",names.and.syns),gsub("-"," ",names.and.syns))))
 
+        # Condense multiple spaces into one in the search key
         while(grepl("  ",x)) {
           gsub("  "," ",x)
         }
 
+        # Convert search key to lower case
         x <- tolower(x)
 
+        # Check if search key is in the names/synonyms list, if found, add it to output list and move on
         if (x %in% names.and.syns) {
           out.ids[i] <- hmdb.ids[j]
           found.id <- TRUE
@@ -119,9 +131,11 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
         }
       }
 
+      # Increment counter of number of IDs checked
       ids.checked <- ids.checked + length(hmdb.ids)
     }
 
+    # If ID is not found, set to NA
     if(!found.id) { out.ids[i] <- NA }
   }
 

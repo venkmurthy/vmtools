@@ -3,6 +3,7 @@
 #' This function searches the HMDB to find the canonical HMDB ID for a given ID.
 #'
 #' @param id vector of strings with ID starting with "HMDB" or numbers with just the numeric part
+#' @param max.tries number of times to retry loading a page
 #' @return vector of strings with canonical HMDB IDs
 #' @keywords HMDB
 #' @examples
