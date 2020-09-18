@@ -20,12 +20,12 @@
 #' t0 <- Sys.time()
 #' HMDB_ID_from_name(test.list[1:20])
 #' Sys.time() -t0
+#' HMDB_ID_from_name("C5 carnitine")
 #' @export
 library(dplyr)
 library(rvest)
 library(xml2)
 library(purrr)
-
 
 HMDB_ID_from_name <- function(met.names,max.depth=25) {
   # Set up some search constants
@@ -62,10 +62,12 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
       next
     }
 
+    # Initialize variables
     found.id <- FALSE
     search.page <- 1
     ids.checked <- 0
 
+    # Repeated lookup
     while (!found.id & ids.checked<=max.depth) {
       u <- sprintf(search.url,search.page,URLencode(tolower(x),reserved=TRUE))
 
@@ -101,7 +103,16 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
         xml.names <- xml.entry %>% xml2::xml_find_first("//metabolite/name") %>% xml2::xml_text()
         xml.syns <- xml.entry %>% xml2::xml_find_all("//metabolite/synonyms/synonym") %>% xml2::xml_text()
 
-        if (tolower(gsub(" ","",gsub("-","",x))) %in% tolower(c(xml.names,xml.syns))) {
+        names.and.syns <- c(xml.names,xml.syns)
+        names.and.syns <- tolower(unique(c(names.and.syns,gsub(" ","-",names.and.syns),gsub("-"," ",names.and.syns))))
+
+        while(grepl("  ",x)) {
+          gsub("  "," ",x)
+        }
+
+        x <- tolower(x)
+
+        if (x %in% names.and.syns) {
           out.ids[i] <- hmdb.ids[j]
           found.id <- TRUE
           break
