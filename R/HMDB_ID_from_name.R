@@ -39,12 +39,12 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
   safe_read_xml <- function(u) {
     con <- file(u)
     on.exit(purrr::safely(close)(con))
-    purrr::quietly(purrr::safely(read_xml,quiet=TRUE))(con)
+    purrr::quietly(purrr::safely(xml2::read_xml,quiet=TRUE))(con)$result
   }
   safe_read_html <- function(u) {
     con <- file(u)
     on.exit(purrr::safely(close)(con))
-    purrr::quietly(purrr::safely(read_html,quiet=TRUE))(con)
+    purrr::quietly(purrr::safely(xml2::read_html,quiet=TRUE))(con)$result
   }
 
   # Initialize output list
@@ -81,7 +81,7 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
           pause.length <- pause.length * 1.5
         }
       }
-      hmdb.ids <- h %>% html_nodes("div.result-link") %>% html_nodes("a") %>% html_text()
+      hmdb.ids <- h %>% rvest::html_nodes("div.result-link") %>% rvest::html_nodes("a") %>% rvest::html_text()
 
       for (j in seq_along(hmdb.ids)) {
         pause.length <- 5
@@ -98,8 +98,8 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
           }
         }
 
-        xml.names <- xml.entry %>% xml_find_first("//metabolite/name") %>% xml_text()
-        xml.syns <- xml.entry %>% xml_find_all("//metabolite/synonyms/synonym") %>% xml_text()
+        xml.names <- xml.entry %>% xml2::xml_find_first("//metabolite/name") %>% xml2::xml_text()
+        xml.syns <- xml.entry %>% xml2::xml_find_all("//metabolite/synonyms/synonym") %>% xml2::xml_text()
 
         if (tolower(gsub(" ","",gsub("-","",x))) %in% tolower(c(xml.names,xml.syns))) {
           out.ids[i] <- hmdb.ids[j]
