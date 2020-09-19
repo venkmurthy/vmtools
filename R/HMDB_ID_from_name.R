@@ -7,6 +7,7 @@
 #' @param met.name string containing metabolite name
 #' @param max.depth number indicating how many entries to be checked (may be slightly more than this,
 #' depending on entries per page)
+#' @param max.tries number of times to retry loading a page
 #' @return string with canonical HMDB ID
 #' @keywords HMDB
 #' @examples
@@ -29,7 +30,8 @@ library(rvest)
 library(xml2)
 library(purrr)
 
-HMDB_ID_from_name <- function(met.names,max.depth=25) {
+
+HMDB_ID_from_name <- function(met.names,max.depth=25,max.tries=5) {
   # Set up some search constants
   search.url <- "https://hmdb.ca/unearth/q?button=&page=%i&query=%s&searcher=metabolites"
   xml.url <- "https://hmdb.ca/metabolites/%s.xml"
@@ -95,39 +97,50 @@ HMDB_ID_from_name <- function(met.names,max.depth=25) {
         pause.length <- 5
 
         # Repeatedly try to pull XML entry until success
+        num.tries <- 0
+        found.xml <- NA
         repeat {
           xml.entry <- safe_read_xml(sprintf(xml.url,hmdb.ids[j]))
 
           if (is.null(xml.entry$error)) {
             xml.entry <- xml.entry$result
+            found.xml <- TRUE
             break
           } else {
-            Sys.sleep(pause.length)
-            pause.length <- pause.length * 1.5
+            num.tries <- num.tries + 1
+            if (num.tries > max.tries) {
+              found.xml <- FALSE
+              break
+            } else {
+              Sys.sleep(pause.length)
+              pause.length <- pause.length * 1.5
+            }
           }
         }
 
-        # Pull out primary name and synonyms
-        xml.names <- xml.entry %>% xml2::xml_find_first("//metabolite/name") %>% xml2::xml_text()
-        xml.syns <- xml.entry %>% xml2::xml_find_all("//metabolite/synonyms/synonym") %>% xml2::xml_text()
+        if (found.xml==TRUE) {
+          # Pull out primary name and synonyms
+          xml.names <- xml.entry %>% xml2::xml_find_first("//metabolite/name") %>% xml2::xml_text()
+          xml.syns <- xml.entry %>% xml2::xml_find_all("//metabolite/synonyms/synonym") %>% xml2::xml_text()
 
-        # Combine name and synonyms, create variations with hyphen vs. dash and make all lower case
-        names.and.syns <- c(xml.names,xml.syns)
-        names.and.syns <- tolower(unique(c(names.and.syns,gsub(" ","-",names.and.syns),gsub("-"," ",names.and.syns))))
+          # Combine name and synonyms, create variations with hyphen vs. dash and make all lower case
+          names.and.syns <- c(xml.names,xml.syns)
+          names.and.syns <- tolower(unique(c(names.and.syns,gsub(" ","-",names.and.syns),gsub("-"," ",names.and.syns))))
 
-        # Condense multiple spaces into one in the search key
-        while(grepl("  ",x)) {
-          gsub("  "," ",x)
-        }
+          # Condense multiple spaces into one in the search key
+          while(grepl("  ",x)) {
+            gsub("  "," ",x)
+          }
 
-        # Convert search key to lower case
-        x <- tolower(x)
+          # Convert search key to lower case
+          x <- tolower(x)
 
-        # Check if search key is in the names/synonyms list, if found, add it to output list and move on
-        if (x %in% names.and.syns) {
-          out.ids[i] <- hmdb.ids[j]
-          found.id <- TRUE
-          break
+          # Check if search key is in the names/synonyms list, if found, add it to output list and move on
+          if (x %in% names.and.syns) {
+            out.ids[i] <- hmdb.ids[j]
+            found.id <- TRUE
+            break
+          }
         }
       }
 
