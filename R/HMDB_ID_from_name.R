@@ -18,18 +18,16 @@
 #' "asparagine","glutamine","histidine","arginine","lysine","valine","leucine","isoleucine","phenylalanine",
 #' "tyrosine","tryptophan","proline","hydroxyproline","ornithine","citrulline","taurine","GABA",
 #' "dimethylglycine","ADMA","SDMA","NMMA","2-aminoisobutyric acid","kynurenic acid","1-methylhistamine",
-#' "N-carbamoyl-beta-alanine","thiamine","niacinamide","betaine")
+#' "N-carbamoyl-beta-alanine","thiamine","niacinamide","betaine","PE(P-36:4)/PE(O-36:5)","PE(P-36:2)/PE(O-36:3)",
+#' "PE(P-38:6)/PE(O-38:7)","PE(P-38:4)/PE(O-38:5)","PE(P-40:6)/PE(O-40:7)")
 #'
 #' t0 <- Sys.time()
-#' HMDB_ID_from_name(test.list[1:20])
+#' HMDB_ID_from_name(test.list)
 #' Sys.time() -t0
+#'
 #' HMDB_ID_from_name("C5 carnitine")
 #' @export
-library(dplyr)
-library(rvest)
-library(xml2)
 library(purrr)
-
 
 HMDB_ID_from_name <- function(met.names,max.depth=25,max.tries=5) {
   # Set up some search constants
