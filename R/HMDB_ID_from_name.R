@@ -64,6 +64,42 @@ HMDB_ID_from_name <- function(met.names,max.depth=25,max.tries=5) {
       next
     }
 
+    # Manage old school lipid names
+    if (grepl("^C[0-9]{2}:[0-9] +(MAG|DAG|TAG|LPC|LPE|PC|PE)$",x)) {
+      sat <- substr(x,2,5)
+      class <- str_split(x," ")[[1]][2]
+      class <- case_when(class=="MAG" ~ "MG",
+                         class=="DAG" ~ "DG",
+                         class=="TAG" ~ "TG",
+                         TRUE ~ class)
+      x <- sprintf("%s(%s)",class,sat)
+    } else if (grepl("^C[0-9]{2}:[0-9] +ceramide",x)) {
+      sat <- substr(x,2,5)
+      if (grepl("(d[0-9]{2}:[-9])$",x)) {
+        cer.sat <- str_split(x,"\\(")[[1]][length(str_split(x,"\\(")[[1]])]
+        cer.sat <- substr(cer.sat,0,str_length(cer.sat)-1)
+      } else {
+        cer.sat <- "d18:1"
+      }
+      x <- sprintf("Cer(%s/%s)",cer.sat,sat)
+    } else if (grepl("^C[0-9]{2}:[0-9] +SM",x)) {
+      sat <- substr(x,2,5)
+      if (grepl("(d[0-9]{2}:[-9])$",x)) {
+        sm.sat <- str_split(x,"\\(")[[1]][length(str_split(x,"\\(")[[1]])]
+        sm.sat <- substr(sm.sat,0,str_length(sm.sat)-1)
+      } else {
+        sm.sat <- "d18:1"
+      }
+      x <- sprintf("SM(%s/%s)",sm.sat,sat)
+    } else if (grepl("^C[0-9]{2}:[0-9] +(PC|PE)+ plasmalogen$",x)) {
+      sat2 <- substr(x,2,5)
+      sat1 <- as.numeric(str_split(sat2,":")[[1]])
+      sat1[2] <- sat1[2] - 1
+      sat1 <- sprintf("%s:%s",sat1[1],sat1[2])
+      class <- str_split(x," ")[[1]][2]
+      x <- sprintf("%s(P-%s)/%s(O-%s)",class,sat1,class,sat2)
+    }
+
     # Initialize variables
     found.id <- FALSE
     search.page <- 1
