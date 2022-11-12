@@ -15,10 +15,6 @@
 
 
 predict_FEV1 <- function(age, height, race, sex) {
-
-  c
-
-
 # SAS code example from Laura Colangelo
   # if sex=1 and race=5 then do;
   # Mspline = 0.3901 - 1.0579*(&age/100) + 1.4743*(&age/100)**2 - 2.1077*(&age/100)**3 - 0.1215*(&age/100)**4 +
