@@ -1,6 +1,6 @@
 #' Calculate Pooled Cohorts Equations risk scores
 #'
-#' This function calculates Pooled Cohorts Equations risk scores per recent ACC/AHA recommendations.
+#' This function calculates Pooled Cohorts Equations risk scores per prior ACC/AHA recommendations.
 #' Reference: Goff DC, et al. Circulation 2014;19:S49-S73
 #' DOI: 10.1161/01.cir.0000437741.48606.98
 #' @param age age in years
@@ -21,7 +21,7 @@
 #' @param smoking.true values which indicate active smoking, case-insensitive (default=1,"t","true","y","yes","active")
 #' @param smoking.false values which indicate no active smoking, case-insensitive (default=0,"f","false","n","no","former","non-smoker","nonsmoker")
 #' @param dm.true values which indicate diabetes, case-insensitive (default=1,"t","true","y","yes")
-#' @param dm.false values which indicate nodiabetes, case-insensitive (default=0,"f","false","n","no")
+#' @param dm.false values which indicate no diabetes, case-insensitive (default=0,"f","false","n","no")
 #' @return PCE risk as numeric from 0 to 1
 #' @keywords PCE
 #' @examples
