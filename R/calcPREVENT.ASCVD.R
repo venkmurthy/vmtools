@@ -42,15 +42,16 @@
 #' @export
 
 calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin,
-                        female=c(0,"f","female"),male=c(1,"m","male"),
-                    bptx.true=c(1,"t","true","y","yes"), bptx.false=c(0,"f","false","n","no"),
-                    smoking.true=c(1,"t","true","y","yes","active"),
-                    smoking.false=c(0,"f","false","former","non-smoker","nonsmoker"),
-                    dm.true=c(1,"t","true","y","yes"),dm.false=c(0,"f","false","n","no"),
-                    statin.true=c(1,"t","true","y","yes"),statin.false=c(0,"f","false","n","no")) {
+                              female=c(0,"f","female"),male=c(1,"m","male"),
+                              bptx.true=c(1,"t","true","y","yes"), bptx.false=c(0,"f","false","n","no"),
+                              smoking.true=c(1,"t","true","y","yes","active"),
+                              smoking.false=c(0,"f","false","former","non-smoker","nonsmoker"),
+                              dm.true=c(1,"t","true","y","yes"),dm.false=c(0,"f","false","n","no"),
+                              statin.true=c(1,"t","true","y","yes"),statin.false=c(0,"f","false","n","no")) {
 
   # Initialize vectors
   lodds <- rep(NA,length(age))
+
 
   age2 <- age
   age2[age2>79] <- 79
