@@ -26,10 +26,10 @@
 #' @return PREVENT 10 year ASCVD risk as numeric from 0 to 1
 #' @keywords PREVENT
 #' @examples
-#' calcPREVENT.ASCVD(55,0,0,213,50,120,0,0,0)
-#' calcPREVENT.ASCVD(55,1,0,213,50,120,0,0,0)
-#' calcPREVENT.ASCVD(55,0,1,213,50,120,0,0,0)
-#' calcPREVENT.ASCVD(55,1,1,213,50,120,0,0,0)
+#' calcPREVENT.ASCVD(50,0,200,45,160,1,1,1,0,90)
+#' calcPREVENT.ASCVD(55,1,213,50,120,0,0,0,0,60)
+#' calcPREVENT.ASCVD(55,0,213,50,120,0,0,0,0,60)
+#' calcPREVENT.ASCVD(55,1,213,50,120,0,0,0,0,60)
 #'
 #'
 #' test.dat <- data.frame(age=rep(56:65,4),race=c(rep(0,10),rep(1,10),rep(0,10),rep(1,10)),
@@ -41,7 +41,7 @@
 #'                         test.dat$bptx,test.dat$smoking,test.dat$dm)
 #' @export
 
-calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin,
+calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin, egfr,
                               female=c(0,"f","female"),male=c(1,"m","male"),
                               bptx.true=c(1,"t","true","y","yes"), bptx.false=c(0,"f","false","n","no"),
                               smoking.true=c(1,"t","true","y","yes","active"),
@@ -83,7 +83,7 @@ calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin,
     0.0325692*(age[women] - 55)/10 * (hdl[women] - 1.3)/0.3 -
     0.1035985*(age[women] - 55)/10 * (pmax(sbp[women], 110) - 130) /20 -
     0.2417542*(age[women] - 55)/10 * (diab[women]) -
-    0.0791142*(age - 55) /10 * (smoke[women]) - 0.1671492 * (age - 55) /10 * (pmin(eGFR, 60) - 60) / -15
+    0.0791142*(age - 55) /10 * (smoke[women]) - 0.1671492 * (age - 55) /10 * (pmin(egfr[women], 60) - 60) / -15
 
   # Men
   men <- sapply(sex,tolower) %in% sapply(male,tolower)
@@ -94,7 +94,7 @@ calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin,
     0.3690075*(pmin(egfr[men], 60) - 60)/-15 + 0.0203619*(pmax(egfr[men], 60) - 90)/-15 +
     0.2036522*(bprx[men]) - 0.0865581*(lipidtx[men]) - 0.0322916*(bprx[men])*(pmax(sbp[men], 110) - 130)/20 +
     0.114563*(lipidtx[men])*(tc[men] - hdl[men] - 3.5) - 0.0300005*(age[men] - 55)/10 * (tc[men] - hdl[men] - 3.5) +
-    0.0232747*(age[men] - 55)/10 * (hdl[men] - 1.3)/0.3 - 0.0927024*(age[men] - 55)/10 * (pmax(SBP, 110) - 130)/20 -
+    0.0232747*(age[men] - 55)/10 * (hdl[men] - 1.3)/0.3 - 0.0927024*(age[men] - 55)/10 * (pmax(sbp[men], 110) - 130)/20 -
     0.2018525*(age[men] - 55)/10 * (diab[men]) - 0.0970527*(age[men] - 55)/10 * (smoke[men]) -
     0.1217081*(age[men] - 55)/10 * (pmin(egfr[men], 60) - 60)/-15
 
