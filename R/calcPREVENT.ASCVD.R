@@ -49,7 +49,6 @@ calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin,
                     dm.true=c(1,"t","true","y","yes"),dm.false=c(0,"f","false","n","no"),
                     statin.true=c(1,"t","true","y","yes"),statin.false=c(0,"f","false","n","no")) {
 
-
   # Initialize vectors
   lodds <- rep(NA,length(age))
 
