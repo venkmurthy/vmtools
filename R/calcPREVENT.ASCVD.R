@@ -70,6 +70,10 @@ calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin,
   lipidtx[sapply(statin,tolower) %in% sapply(statin.true,tolower)] <- 1
   lipidtx[sapply(statin,tolower) %in% sapply(statin.false,tolower)] <- 0
 
+  # Formulas need cholesterol metrics to be in mmol/L
+  tc <- tc * 0.02586
+  hdl <- hdl * 0.02586
+
   # Women
   women <- sapply(sex,tolower) %in% sapply(female,tolower)
 
