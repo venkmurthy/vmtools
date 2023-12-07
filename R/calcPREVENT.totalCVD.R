@@ -23,7 +23,7 @@
 #' @param dm.false values which indicate no diabetes, case-insensitive (default=0,"f","false","n","no")
 #' @param statin.true values which indicate statin use, case-insensitive (default=1,"t","true","y","yes")
 #' @param statin.false values which indicate no statin use, case-insensitive (default=0,"f","false","n","no")
-#' @return PREVENT 10 year ASCVD risk as numeric from 0 to 1
+#' @return PREVENT 10 year total CVD risk as numeric from 0 to 1
 #' @keywords PREVENT
 #' @examples
 #' calcPREVENT.totalCVD(50,0,200,45,160,1,0,1,0,90)
