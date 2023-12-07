@@ -65,7 +65,7 @@ calcPREVENT.HF <- function(age, sex, sbp, bptx, smoking, dm, bmi, egfr,
   # Women
   women <- sapply(sex,tolower) %in% sapply(female,tolower)
 
-  lodds[women] <- 4.310409 + 0.8998235*(age2[women] - 55)/10 - 0.4559771*(pmin(sbp[women], 110) - 110)/20 +
+  lodds[women] <- -4.310409 + 0.8998235*(age2[women] - 55)/10 - 0.4559771*(pmin(sbp[women], 110) - 110)/20 +
     0.3576505*(pmax(sbp[women], 110) - 130)/20 + 1.038346*(diab[women]) + 0.583916*(smoke[women]) -
     0.0072294*(pmin(bmi[women], 30) - 25)/5 + 0.2997706*(pmax(bmi[women], 30) - 30)/5 +
     0.7451638*(pmin(egfr[women], 60) - 60)/-15 + 0.0557087*(pmax(egfr[women], 60) - 90)/-15 +
@@ -77,14 +77,14 @@ calcPREVENT.HF <- function(age, sex, sbp, bptx, smoking, dm, bmi, egfr,
   # Men
   men <- sapply(sex,tolower) %in% sapply(male,tolower)
 
-  lodds[men] <- 4.310409 + 0.8998235*(age2[men] - 55)/10 - 0.4559771*(pmin(sbp[men], 110) - 110)/20 +
-    0.3576505*(pmax(sbp[men], 110) - 130)/20 + 1.038346*(diab[men]) + 0.583916*(smoke[men]) -
-    0.0072294*(pmin(bmi[men], 30) - 25)/5 + 0.2997706*(pmax(bmi[men], 30) - 30)/5 +
-    0.7451638*(pmin(egfr[men], 60) - 60)/-15 + 0.0557087*(pmax(egfr[men], 60) - 90)/-15 +
-    0.3534442*(bprx[men]) - 0.0981511*(bprx[men]) * (pmax(sbp[men], 110) - 130)/20 -
-    0.0946663*(age2[men] - 55)/10 * (pmax(sbp[men], 110) - 130)/20 -
-    0.3581041*(age2[men] - 55)/10 * (diab[men]) - 0.1159453*(age2[men] - 55)/10 * (smoke[men]) -
-    0.003878*(pmax(bmi[men], 30) - 30)/5 - 0.1884289*(age2[men] - 55)/10 * (pmin(egfr[men], 60) - 60)/-15
+  lodds[men] <- -3.946391 + 0.8972642*(age2[men] - 55)/10 - 0.6811466*(pmin(sbp[men], 110) - 110)/20 +
+    0.3634461*(pmax(sbp[men], 110) - 130)/20 + 0.923776*(diab[men]) + 0.5023736*(smoke[men]) -
+    0.0485841*(pmin(bmi[men], 30) - 25)/5 + 0.3726929*(pmax(bmi[men], 30) - 30)/5 +
+    0.6926917*(pmin(egfr[men], 60) - 60)/-15 + 0.0251827*(pmax(egfr[men], 60) - 90)/-15 +
+    0.2980922*(bprx[men]) - 0.0497731*(bprx[men]) * (pmax(sbp[men], 110) - 130)/20 -
+    0.1289201*(age2[men] - 55)/10 * (pmax(sbp[men], 110) - 130)/20 -
+    0.3040924*(age2[men] - 55)/10 * (diab[men]) - 0.1401688*(age2[men] - 55)/10 * (smoke[men]) +
+    0.0068126*(pmax(bmi[men], 30) - 30)/5 - 0.1797778*(age2[men] - 55)/10 * (pmin(egfr[men], 60) - 60)/-15
 
   prevent <- exp(lodds)/(1+exp(lodds))
 
