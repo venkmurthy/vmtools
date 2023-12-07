@@ -53,6 +53,8 @@ calcPREVENT.totalCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, stat
   # Initialize vectors
   lodds <- rep(NA,length(age))
 
+
+
   age2 <- age
   age2[age2>79] <- 79
   age2[age2<30] <- 30
