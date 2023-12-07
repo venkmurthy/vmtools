@@ -38,8 +38,8 @@
 #'                        statin=c(rep(0,10),rep(1,10),rep(0,10),rep(1,10)),
 #'                        egfr=c(rep(40,10),rep(90,10),rep(40,10),rep(90,10)))
 #'
-#' test.dat$PREVENT.totalCVD <- calcPREVENT(test.dat$age,test.dat$race,test.dat$sex,test.dat$tc,test.dat$hdl,test.dat$sbp,
-#'                              test.dat$bptx,test.dat$smoking,test.dat$dm)
+#' test.dat$PREVENT.ASCVD <- calcPREVENT.ASCVD(test.dat$age,test.dat$sex,test.dat$tc,test.dat$hdl,test.dat$sbp,
+#'                                             test.dat$bptx,test.dat$smoking,test.dat$dm,test.dat$statin,test.dat$egfr)
 #' @export
 
 calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin, egfr,
@@ -52,7 +52,6 @@ calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin,
 
   # Initialize vectors
   lodds <- rep(NA,length(age))
-
 
   age2 <- age
   age2[age2>79] <- 79
@@ -88,7 +87,7 @@ calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin,
     0.0325692*(age2[women] - 55)/10 * (hdl[women] - 1.3)/0.3 -
     0.1035985*(age2[women] - 55)/10 * (pmax(sbp[women], 110) - 130) /20 -
     0.2417542*(age2[women] - 55)/10 * (diab[women]) -
-    0.0791142*(age2 - 55) /10 * (smoke[women]) - 0.1671492 * (age2 - 55) /10 * (pmin(egfr[women], 60) - 60) / -15
+    0.0791142*(age2[women] - 55) /10 * (smoke[women]) - 0.1671492 * (age2[women] - 55) /10 * (pmin(egfr[women], 60) - 60) / -15
 
   # Men
   men <- sapply(sex,tolower) %in% sapply(male,tolower)
