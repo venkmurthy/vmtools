@@ -26,7 +26,7 @@
 #' @return PREVENT 10 year ASCVD risk as numeric from 0 to 1
 #' @keywords PREVENT
 #' @examples
-#' calcPREVENT.ASCVD(50,0,200,45,160,1,1,1,0,90)
+#' calcPREVENT.ASCVD(50,0,200,45,160,1,0,1,0,90)
 #' calcPREVENT.ASCVD(55,1,213,50,120,0,0,0,0,60)
 #' calcPREVENT.ASCVD(55,0,213,50,120,0,0,0,0,60)
 #' calcPREVENT.ASCVD(55,1,213,50,120,0,0,0,0,60)

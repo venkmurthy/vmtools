@@ -26,7 +26,7 @@
 #' @return PREVENT 10 year ASCVD risk as numeric from 0 to 1
 #' @keywords PREVENT
 #' @examples
-#' calcPREVENT.totalCVD(50,0,200,45,160,1,1,1,0,90)
+#' calcPREVENT.totalCVD(50,0,200,45,160,1,0,1,0,90)
 #' calcPREVENT.totalCVD(55,1,213,50,120,0,0,0,0,60)
 #' calcPREVENT.totalCVD(55,0,213,50,120,0,0,0,0,60)
 #' calcPREVENT.totalCVD(55,1,213,50,120,0,0,0,0,60)
@@ -38,8 +38,9 @@
 #'                        statin=c(rep(0,10),rep(1,10),rep(0,10),rep(1,10)),
 #'                        egfr=c(rep(40,10),rep(90,10),rep(40,10),rep(90,10)))
 #'
-#' test.dat$PREVENT.totalCVD <- calcPREVENT(test.dat$age,test.dat$race,test.dat$sex,test.dat$tc,test.dat$hdl,test.dat$sbp,
-#'                              test.dat$bptx,test.dat$smoking,test.dat$dm)
+#' test.dat$PREVENT.totalCVD <- calcPREVENT.totalCVD(test.dat$age,test.dat$sex,test.dat$tc,test.dat$hdl,
+#'                                                   test.dat$sbp,test.dat$bptx,test.dat$smoking,test.dat$dm,
+#'                                                   test.dat$statin,test.dat$egfr)
 #' @export
 
 calcPREVENT.totalCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin, egfr,
@@ -52,8 +53,6 @@ calcPREVENT.totalCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, stat
 
   # Initialize vectors
   lodds <- rep(NA,length(age))
-
-
 
   age2 <- age
   age2[age2>79] <- 79
@@ -73,36 +72,38 @@ calcPREVENT.totalCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, stat
   lipidtx[sapply(statin,tolower) %in% sapply(statin.false,tolower)] <- 0
 
   # Formulas need cholesterol metrics to be in mmol/L
-  tc <- tc * 0.02586
-  hdl <- hdl * 0.02586
+  tc2 <- tc * 0.02586
+  hdl2 <- hdl * 0.02586
 
   # Women
   women <- sapply(sex,tolower) %in% sapply(female,tolower)
 
-  # lodds[women] <- -3.819975 + 0.719883 * (age2[women] - 55)/10 + 0.1176967 * (tc[women] - hdl[women] - 3.5) -
-  #   0.151185 * (hdl[women] - 1.3)/0.3 - 0.0835358 * (pmin(sbp[women],110) - 110)/20 +
-  #   0.3592852*(pmax(sbp[women], 110) - 130)/20 + 0.8348585*(diab[women]) + 0.4831078*(smoke[women]) +
-  #   0.4864619*(pmin(egfr[women], 60) - 60)/-15 + 0.0397779*(pmax(egfr[women], 60) - 90)/-15 +
-  #   0.2265309*(bprx[women]) - 0.0592374*(lipidtx[women]) - 0.0395762*(bprx[women])*(pmax(sbp[women],110) - 130)/20 +
-  #   0.0844423*(lipidtx[women])*(tc[women] - hdl[women] - 3.5) -
-  #   0.0567839*(age2[women] - 55)/10 * (tc[women] - hdl[women] - 3.5) +
-  #   0.0325692*(age2[women] - 55)/10 * (hdl[women] - 1.3)/0.3 -
-  #   0.1035985*(age2[women] - 55)/10 * (pmax(sbp[women], 110) - 130) /20 -
-  #   0.2417542*(age2[women] - 55)/10 * (diab[women]) -
-  #   0.0791142*(age2 - 55) /10 * (smoke[women]) - 0.1671492 * (age2 - 55) /10 * (pmin(egfr[women], 60) - 60) / -15
+  lodds[women] <- -3.307728 + 0.7939329*(age2[women] - 55)/10 + 0.0305239*(tc2[women] - hdl2[women] - 3.5) -
+    0.1606857*(hdl2[women] - 1.3)/0.3 - 0.2394003*(pmin(sbp[women], 110) - 110)/20 +
+    0.360078*(pmax(sbp[women], 110) - 130)/20 + 0.8667604*(diab[women]) + 0.5360739*(smoke[women]) +
+    0.6045917*(pmin(egfr[women], 60) - 60)/-15 + 0.0433769*(pmax(egfr[women], 60) - 90)/-15 +
+    0.3151672*(bprx[women]) - 0.1477655*(lipidtx[women]) - 0.0663612*(bprx[women])*(pmax(sbp[women], 110) - 130)/20 +
+    0.1197879*(lipidtx[women])*(tc2[women] - hdl2[women] - 3.5) -
+    0.0819715*(age2[women] - 55)/10 * (tc2[women] - hdl2[women] - 3.5) +
+    0.0306769*(age2[women] - 55)/10 * (hdl2[women] - 1.3)/0.3 -
+    0.0946348*(age2[women] - 55)/10 * (pmax(sbp[women], 110) - 130)/20 -
+    0.27057*(age2[women] - 55)/10 * (diab[women]) - 0.078715*(age2[women] - 55)/10 * (smoke[women]) -
+    0.1637806*(age2[women] - 55) /10 * (pmin(egfr[women], 60) - 60)/-15
 
   # Men
   men <- sapply(sex,tolower) %in% sapply(male,tolower)
 
-  # lodds[men] <- -3.500655 + 0.7099847*(age2[men] - 55)/10 + 0.1658663*(tc[men] - hdl[men] - 3.5) -
-  #   0.1144285*(hdl[men] - 1.3)/0.3 - 0.2837212*(pmin(sbp[men], 110) - 110)/20 +
-  #   0.3239977*(pmax(sbp[men], 110) - 130)/20 + 0.7189597*(diab[men]) + 0.3956973*(smoke[men]) +
-  #   0.3690075*(pmin(egfr[men], 60) - 60)/-15 + 0.0203619*(pmax(egfr[men], 60) - 90)/-15 +
-  #   0.2036522*(bprx[men]) - 0.0865581*(lipidtx[men]) - 0.0322916*(bprx[men])*(pmax(sbp[men], 110) - 130)/20 +
-  #   0.114563*(lipidtx[men])*(tc[men] - hdl[men] - 3.5) - 0.0300005*(age2[men] - 55)/10 * (tc[men] - hdl[men] - 3.5) +
-  #   0.0232747*(age2[men] - 55)/10 * (hdl[men] - 1.3)/0.3 - 0.0927024*(age2[men] - 55)/10 * (pmax(sbp[men], 110) - 130)/20 -
-  #   0.2018525*(age2[men] - 55)/10 * (diab[men]) - 0.0970527*(age2[men] - 55)/10 * (smoke[men]) -
-  #   0.1217081*(age2[men] - 55)/10 * (pmin(egfr[men], 60) - 60)/-15
+  lodds[men] <- -3.031168 + 0.7688528*(age2[men] - 55)/10 + 0.0736174*(tc2[men] - hdl2[men] - 3.5) -
+    0.0954431*(hdl2[men] - 1.3)/0.3 - 0.4347345*(pmin(sbp[men], 110) - 110)/20 +
+    0.3362658*(pmax(sbp[men], 110) - 130)/20 + 0.7692857*(diab[men]) + 0.4386871*(smoke[men]) +
+    0.5378979*(pmin(egfr[men], 60) - 60)/-15 + 0.0164827*(pmax(egfr[men], 60) - 90)/-15 +
+    0.288879*(bprx[men]) - 0.1337349*(lipidtx[men]) - 0.0475924*(bprx[men]) * (pmax(sbp[men], 110) - 130)/20 +
+    0.150273*(lipidtx[men]) * (tc2[men] - hdl2[men] - 3.5) -
+    0.0517874*(age2[men] - 55)/10 * (tc2[men] - hdl2[men] - 3.5) +
+    0.0191169*(age2[men] - 55)/10 * (hdl2[men] - 1.3) /0.3 -
+    0.1049477*(age2[men] - 55)/10 * (pmax(sbp[men], 110) - 130)/20 -
+    0.2251948*(age2[men] - 55)/10 * (diab[men]) - 0.0895067*(age2[men] - 55)/10 * (smoke[men]) -
+    0.1543702*(age2[men] - 55)/10 * (pmin(egfr[men], 60) - 60)/-15
 
   prevent <- exp(lodds)/(1+exp(lodds))
 
