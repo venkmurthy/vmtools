@@ -12,7 +12,7 @@
 #' @param smoking active smoking 0=FALSE/1=TRUE
 #' @param dm diabetes mellitus 0=FALSE/1=TRUE
 #' @param statin use of statin medication 0=FALSE/1=TRUE
-#' @param egfr estimated glomerular filtration rate
+#' @param egfr estimated glomerular filtration rate in ml/min/1.73m^2
 #' @param female values which indicate female in the parameter sex, case-insensitive (default=0,"f","female")
 #' @param male values which indicate male in the parameter sex, case-insensitive (default=1,"m","male")
 #' @param bptx.true values which indicate BP med use, case-insensitive (default=1,"t","true","y","yes")
