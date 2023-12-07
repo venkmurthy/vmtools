@@ -32,13 +32,14 @@
 #' calcPREVENT.ASCVD(55,1,213,50,120,0,0,0,0,60)
 #'
 #'
-#' test.dat <- data.frame(age=rep(56:65,4),race=c(rep(0,10),rep(1,10),rep(0,10),rep(1,10)),
-#'                        sex=c(rep(0,20),rep(1,20)),tc=rep(136:145,4),hdl=rep(46:55,4),sbp=rep(126:135,4),
-#'                        bptx=rep(c(rep(0,5),rep(1,5)),4),smoking=rep(c(rep(0,5),rep("active",5)),4),
-#'                        dm=rep(c(rep("No",5),rep(1,5)),4))
+#' test.dat <- data.frame(age=rep(56:65,4),sex=c(rep(0,20),rep(1,20)),tc=rep(136:145,4),hdl=rep(46:55,4),
+#'                        sbp=rep(126:135,4),bptx=rep(c(rep(0,5),rep(1,5)),4),
+#'                        smoking=rep(c(rep(0,5),rep("active",5)),4),dm=rep(c(rep("No",5),rep(1,5)),4),
+#'                        statin=c(rep(0,10),rep(1,10),rep(0,10),rep(1,10)),
+#'                        egfr=c(rep(40,10),rep(90,10),rep(40,10),rep(90,10)))
 #'
-#' test.dat$PREVENT.ASCVD <- calcPREVENT(test.dat$age,test.dat$race,test.dat$sex,test.dat$tc,test.dat$hdl,test.dat$sbp,
-#'                         test.dat$bptx,test.dat$smoking,test.dat$dm)
+#' test.dat$PREVENT.totalCVD <- calcPREVENT(test.dat$age,test.dat$race,test.dat$sex,test.dat$tc,test.dat$hdl,test.dat$sbp,
+#'                              test.dat$bptx,test.dat$smoking,test.dat$dm)
 #' @export
 
 calcPREVENT.ASCVD <- function(age, sex, tc, hdl, sbp, bptx, smoking, dm, statin, egfr,
