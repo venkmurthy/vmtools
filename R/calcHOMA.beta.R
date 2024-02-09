@@ -18,5 +18,5 @@
 #' @export
 
 calcHOMA.beta <- function(insulin,glucose) {
-  return((360*insulin)/(glucose-63))
+  return((360*insulin)/(ifelse(glucose<63,63,glucose)-63))
 }
