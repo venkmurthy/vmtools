@@ -18,5 +18,5 @@
 #' @export
 
 calcQUICKI <- function(insulin,glucose) {
-  return(1/(log(insulin) + log(glucose)))
+  return(1/(log10(insulin) + log10(glucose)))
 }
