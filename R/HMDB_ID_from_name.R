@@ -27,7 +27,6 @@
 #'
 #' HMDB_ID_from_name("C5 carnitine")
 #' @export
-library(purrr)
 
 HMDB_ID_from_name <- function(met.names,max.depth=25,max.tries=5) {
   # Set up some search constants
