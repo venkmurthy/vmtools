@@ -1,6 +1,6 @@
-#' Fast save wrapper for multiple objects using qs
+#' Fast read wrapper for multiple objects using qs
 #'
-#' This function wraps multiple objects into a list to allow saving using qs
+#' This reads output of mqsave which wraps objects in a list to allow saving multiple objects using qs
 #'
 #' @param objects vector containing names of objects to save
 #' @param fname filename
@@ -16,11 +16,10 @@
 #' mqread(fname="test.qs")
 #' @export
 
-mqsave <- function(objects, fname, ...) {
-  # Package all objects into a list
-  object.list <- lapply(objects, get)
-  names(object.list) <- objects
+mqread <- function(fname, ...) {
+  # Call qread
+  object.list <- qs::qread(file=fname)
 
-  # Call qsave
-  qs::qsave(object.list, fname, ...)
+  # Unlist objects
+  for(x in names(object.list)) assign(x,object.list[[x]],envir=parent.frame())
 }
